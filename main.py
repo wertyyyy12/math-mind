@@ -101,8 +101,7 @@ def root():
 
     info = image_to_text(imgFile)
 
-    wolframKey = SecuredAuthenticationKey(
-        'NAh6jwqC/QsPX9xli7BldYZuKzo8hXklH2qkDUCrtQc=', 'P/AHQIyKf4Tnrcj4NbOaQYUVvlKFpYZ+vkHPjdvJm6Q=')
+    wolframKey = SecuredAuthenticationKey('NAh6jwqC/QsPX9xli7BldYZuKzo8hXklH2qkDUCrtQc=', 'P/AHQIyKf4Tnrcj4NbOaQYUVvlKFpYZ+vkHPjdvJm6Q=')
     session = WolframCloudSession(credentials=wolframKey)
     session.start()
 
@@ -126,28 +125,7 @@ def root():
             break
 
     print("made it past here")
-    # wolfram code: session.evaluate('x /. Solve[2x+3==5,x]')
-    # other code: session.evaluate('2x+3==5 /. Solve[2x+3==5]')
-
-    # url = "http://169.233.206.193:3001/api/assignments/problems/63dea28786448290b9292ce5"
-    # res = requests.post(url, json={
-    #     "transcription": transcribe("test.mp3"),
-    #     "steps": steps
-    # })
-
-    # wolframUrl = "https://www.wolframcloud.com/obj/1ecaee59-6bcd-4f80-95ac-3be2a0c49499"
-    # wolframRes = requests.get(wolframUrl, params={"steps": steps})
-
-    # if success:
-
-    # for idx, step in enumerate(steps[:len(steps)-1]):  # up until the last step
-    # "identify the portion relevant to this step?"
-
-    # relevantTranscript = completion(find_transcript_portion(
-    #     errors[0], errors[1], transcribe("test.mp3")))
-    # print(relevantTranscript)
-
-    # transcribe("test.mp3")
+    
     pt = find_error_prompt(errors[0], errors[1], steps, question)
 
     print(steps)
@@ -169,21 +147,9 @@ def root():
         # "info": info
     }
 
-
-# def find_transcript_portion(eq1: str, eq2: str, transcript: str) -> str:
-#     return "The first erroneous step of a student's algebraic work occurs when the equation " + f"'{eq1}'" + " becomes the equation " + f"'{eq2}' in the next step." + " Here's a transcript of the student's verbal explanation of their work: '" + transcript + "'. Find the portion of the transcript mentioning the erroneous step."
-
-
 def find_error_prompt(eq1: str, eq2: str, steps, question) -> str:
-    # return "Here are the steps a student took to solve 2x+3=1 for x, with each equation separated by a semicolon: " + ';'.join(steps) + ". The first erroneous step of a student's algebraic work is equation " + f"'{eq2}'." + " Here's a transcript of the student's verbal explanation of their work: '" + transcript + "'. Explain the student's mistake, and generate key word(s) about the mistake."
-    # " Here's a transcript of the student's verbal explanation of their work: '" + transcript +
     formattedQ = question.replace("==", "=")
     return f"Here are the steps a student took to solve {formattedQ} for x, with each equation separated by a semicolon: " + ';'.join(steps) + ". The first erroneous step of a student's algebraic work is when equation " + f"'{eq1}'" + " is rewritten as " + f"'{eq2}'." + ". Explain the student's mistake, then, generate key word(s) about the mistake starting with 'keywords: '."
-    # return " Here's a transcript of the student's verbal explanation of their work: '" + transcript + "'. Identify the sections of the explanation that are incorrect, and generate keywords relevant to the mistake."
-    # return "A student's work goes from the equation " + f"'{eq1}'" + " to the equation " + f"'{eq2}'." + " Here is a transcript of the student's verbal explanation of their work: '" + transcript + "'. If the student didn't make a mistake, include 'no error' in your response. Otherwise, explain the student's mistake, and generate key word(s) about the mistake."
-    # return "Explain the cause of the error in the following step of algebraic work; each equation is separated by a semicolon:" + mathematicalWork
-    # return "Here's the solution to an algebra problem, delimited with semicolons: ;" + soln + "; First, write a step-by-step solution. Then, determine whether this step of a student's work differs from this solution, and if so, explain the difference. If there are no errors, explain why. Each equation is separated by a newline: " + mathematicalWork
-
 
 if __name__ == '__main__':
-    app.run(port=7000)
+    app.run(host='0.0.0.0', port=7000)
